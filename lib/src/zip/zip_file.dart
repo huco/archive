@@ -61,7 +61,12 @@ class ZipFile extends FileContent {
       uncompressedSize = input.readUint32();
       final fnLen = input.readUint16();
       final exLen = input.readUint16();
-      filename = input.readString(size: fnLen);
+      try {
+        filename = input.readString(size: fnLen);
+      } catch (e) {
+        // fallback
+        filename = input.readString(size: fnLen, utf8: false);
+      }
       extraField = input.readBytes(exLen).toUint8List();
 
       // Use the compressedSize and uncompressedSize from the CFD header.
